@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f5f7fa;
+  color: #1f2937;
+  line-height: 1.6;
+}
+
+header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nav {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #111827;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 600;
+}
+
+.nav-links a:hover {
+  color: #2563eb;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.accent {
+  color: #2563eb;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.about p {
+  max-width: 600px;
+}
+
+.projects .project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.project-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.project-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.project-card h3 {
+  padding: 1rem 1.25rem 0;
+}
+
+.project-card p {
+  padding: 0 1.25rem 1rem;
+}
+
+.project-link {
+  display: block;
+  padding: 1rem 1.25rem;
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 600;
+  border-top: 1px solid #e5e7eb;
+}
+
+.contact p {
+  font-size: 1.1rem;
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #1f2937; color: #f9fafb; }
+  header, footer, .project-card { background: #111827; border-color: #374151; }
+  .logo { color: #f9fafb; }
+  .nav-links a { color: #d1d5db; }
+  .nav-links a:hover { color: #93c5fd; }
+  .btn { background: #3b82f6; }
+  .project-link { color: #93c5fd; border-top-color: #374151; }
+}
