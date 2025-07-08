@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog | madhavvij</title>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            agale: ['Agale', 'serif'],
+            dalton: ['Dalton White', 'serif'],
+            rustic: ['RusticRoadway', 'serif'],
+            sans: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            bg: '#ffffff',
+            surface: '#f0e7db',
+            accent: '#0ab0ff',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-bg text-black font-sans antialiased transition-colors duration-600 dark:bg-black dark:text-white">
+
+  <!-- Dark‑mode toggle -->
+  <button id="dm-toggle" class="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-surface text-black shadow-lg transition hover:bg-black hover:text-white dark:bg-black dark:text-white dark:hover:bg-surface dark:hover:text-black">
+    <svg class="h-5 w-5 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+    </svg>
+  </button>
+
+  <!-- ====== NAVBAR ====== -->
+  <header id="navbar" class="sticky top-0 z-50 w-full transition-all duration-500 ease-in-out">
+    <nav class="flex w-full items-center justify-between gap-6 px-6 py-3 lg:px-10">
+      <!-- logo -->
+      <a href="javascript:void(0)" onclick="navigateToHome()" class="leading-none logo-link">
+        <img src="https://i.ibb.co/6cZrrJsP/Untitled-design-1-removebg-preview.png" alt="Logo" class="h-14 w-14" />
+      </a>
+
+      <!-- main links -->
+      <ul class="hidden gap-6 text-base font-medium lg:flex">
+        <li><a href="javascript:void(0)" onclick="navigateToSection('about')" class="hover:text-accent">about</a></li>
+        <li><a href="blog.html" class="hover:text-accent">blogs</a></li>
+        <li><a href="javascript:void(0)" onclick="navigateToSection('projects')" class="hover:text-accent">projects</a></li>
+        <li><a href="pursuits.html" class="hover:text-accent">pursuits</a></li>
+      </ul>
+
+      <!-- external links -->
+      <div class="flex items-center gap-2 text-base font-medium">
+        <a href="mailto:connect@madhavvij.com" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">email</a>
+        <a href="https://github.com/madhav0604" target="_blank" rel="noopener" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">github</a>
+        <a href="https://linkedin.com/in/vijmadhav" target="_blank" rel="noopener" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">linkedin</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ====== HERO SECTION ====== -->
+  <section class="py-24 px-6 lg:px-10">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="font-dalton text-6xl md:text-8xl font-bold mb-6">Blogs</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300"></p>
+    </div>
+  </section>    
+
+  <!-- ====== BLOG GRID ====== -->
+  <main class="mx-auto max-w-7xl px-6 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <!-- Card 1 -->
+      <article class="group relative aspect-[3/2] overflow-hidden bg-surface dark:bg-gray-800 hover:bg-surface/80 dark:hover:bg-gray-700 transition-colors duration-300 cursor-pointer" data-blog="electronics">
+        <div class="absolute bottom-0 left-0 p-8">
+          <h2 class="text-black dark:text-white text-2xl md:text-3xl font-bold leading-tight">The Invisible Superpowers: How Electronics Turned Us All Into Wizards</h2>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="group relative aspect-[3/2] overflow-hidden bg-surface dark:bg-gray-800 hover:bg-surface/80 dark:hover:bg-gray-700 transition-colors duration-300 cursor-pointer">
+        <div class="absolute bottom-0 left-0 p-8">
+          <h2 class="text-black dark:text-white text-2xl md:text-3xl font-bold leading-tight">Coming Soon...</h2>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- ====== EXPANDABLE MODAL ====== -->
+  <div id="blog-modal" class="fixed inset-0 z-50 hidden bg-bg dark:bg-black overflow-y-auto">
+    <!-- Back button -->
+    <button id="back-btn" class="text-4xl md:text-5xl font-bold px-8 py-5 m-4 bg-surface/80 hover:bg-surface dark:bg-gray-800/80 dark:hover:bg-gray-700 text-black dark:text-white flex items-center gap-2 transition-colors duration-200">
+      ← 
+    </button>
+
+    <!-- Blog content container -->
+    <article class="max-w-4xl w-full mx-auto px-6 md:px-8 py-16 text-black dark:text-white">
+      <div id="blog-content">
+        <!-- Electronics Blog Post -->
+        <div class="blog-post" data-post="electronics">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">The Invisible Superpowers: How Electronics Turned Us All Into Wizards</h1>
+          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+            <span>4 Jul 2025</span>
+            <span>•</span>
+            <span>5 min read</span>
+          </div>
+
+          <div class="prose prose-lg dark:prose-invert max-w-none">
+            <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-300 mb-8 italic">
+              Imagine waking up tomorrow with genuine superpowers. You can speak to anyone across the globe instantly, access all human knowledge with a thought, see through walls, predict the weather, and even make your home obey your voice commands. Sounds like science fiction? Welcome to your life—you already have these powers.
+            </p>
+
+            <h2 class="text-3xl font-bold mt-12 mb-6 text-black dark:text-white">The Telepathy We Call "Communication"</h2>
+            <p class="mb-6 leading-relaxed">
+              Remember when sending a message meant writing on paper, walking to a post office, and waiting weeks for a response? Electronics handed us telepathy on a silver platter. Your smartphone isn't just a device—it's a crystal ball that connects 5 billion minds across the planet. We video-call our grandparents as if they're sitting across the table, not across continents.
+            </p>
+            <p class="mb-8 leading-relaxed">
+              But here's the twist: we're so used to this magic that we get frustrated when a text takes more than 10 seconds to deliver. We've become impatient wizards.
+            </p>
+
+            <h2 class="text-3xl font-bold mt-12 mb-6 text-black dark:text-white">The Memory Palace in Your Pocket</h2>
+            <p class="mb-6 leading-relaxed">
+              Before electronics, libraries were temples where knowledge lived behind locked doors. Today, you carry the entire sum of human knowledge in your back pocket. That argument about whether penguins can fly? Settled in 3 seconds. That recipe your great-grandmother never wrote down? Probably recreated by someone on YouTube.
+            </p>
+            <p class="mb-8 leading-relaxed">
+              Electronics didn't just give us access to information—they gave us superhuman memory. We've outsourced our ability to remember phone numbers, addresses, and even our way home to our digital companions.
+            </p>
+
+            <h2 class="text-3xl font-bold mt-12 mb-6 text-black dark:text-white">The Time Manipulation Trick</h2>
+            <p class="mb-6 leading-relaxed">
+              Electronics compressed time itself. Your great-grandparents took months to cross oceans; you cross them virtually in milliseconds. They waited seasons for news; you get updates faster than events actually happen.
+            </p>
+            <p class="mb-8 leading-relaxed">
+              We've become time travelers, living simultaneously in multiple time zones through video calls, experiencing events in real-time from thousands of miles away, and binge-watching entire decades of entertainment in a weekend.
+            </p>
+
+            <h2 class="text-3xl font-bold mt-12 mb-6 text-black dark:text-white">The House That Obeys</h2>
+            <p class="mb-6 leading-relaxed">
+              Smart homes turned us into domestic sorcerers. We speak, and lights dance to our commands. We whisper, and our homes adjust temperature, play music, or order groceries. Our refrigerators have become crystal balls, showing us what's inside without opening doors. Our doorbells have eyes that see visitors before they arrive.
+            </p>
+            <p class="mb-8 leading-relaxed">
+              Electronics transformed our homes from shelters into responsive, intelligent entities that anticipate our needs.
+            </p>
+
+            <h2 class="text-3xl font-bold mt-12 mb-6 text-black dark:text-white">The Plot Twist</h2>
+            <p class="mb-6 leading-relaxed">
+              Here's the beautiful irony: electronics have made us incredibly powerful yet wonderfully dependent. We can launch satellites but panic when WiFi dies. We can video-call Mars rovers but feel lost without GPS to find the nearest coffee shop.
+            </p>
+            <p class="mb-8 leading-relaxed">
+              Electronics haven't just given us tools—they've rewired what it means to be human. We're the first generation in history to live with genuine superpowers, so seamlessly integrated into our lives that we've forgotten they're miraculous.
+            </p>
+
+            <div class="bg-surface/50 dark:bg-gray-800/50 p-6 rounded-lg my-8 border-l-4 border-accent">
+              <p class="italic text-lg leading-relaxed mb-4">
+                The next time your phone connects you to a friend on another continent, remember: you're not just making a call. You're wielding magic that would have made ancient civilizations worship you as a god.
+              </p>
+              <p class="font-semibold text-accent">
+                The real question isn't what electronics have given us—it's what impossible thing will feel ordinary tomorrow.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="border-t border-black/10 bg-bg py-10 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-black dark:text-gray-400">
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="mb-4">© <span id="year"></span> madhavvij · Hosted on <a href="https://pages.github.com/" class="underline hover:text-accent">GitHub Pages</a></p>
+      
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+        <h4 class="font-semibold mb-2 text-gray-700 dark:text-gray-300">Image Credits</h4>
+        <div class="space-y-1 text-xs">
+          <p>Background image: © Adobe Stock</p>
+          <p>Additional images from <a href="https://unsplash.com/" class="hover:text-accent underline" target="_blank" rel="noopener">Unsplash</a> and <a href="https://www.pexels.com/" class="hover:text-accent underline" target="_blank" rel="noopener">Pexels</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Function to scroll to top without offset
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Navigation functions (consistent with other pages)
+    function navigateToHome() {
+      window.location.href = 'index.html#home';
+    }
+
+    function navigateToSection(section) {
+      window.location.href = `index.html#${section}`;
+    }
+
+    // Navbar transparency and blur on scroll (seamless, no border)
+    const navbar = document.getElementById('navbar');
+
+    function updateNavbar() {
+      if (window.scrollY === 0) {
+        navbar.classList.remove('bg-bg/80', 'backdrop-blur', 'dark:bg-black/80');
+        navbar.classList.add('bg-transparent');
+      } else {
+        navbar.classList.add('bg-bg/80', 'backdrop-blur', 'dark:bg-black/80');
+        navbar.classList.remove('bg-transparent');
+      }
+    }
+
+    // Listen for scroll events
+    window.addEventListener('scroll', updateNavbar);
+    window.addEventListener('load', updateNavbar);
+
+    // Handle navigation from other pages with hash
+    window.addEventListener('load', function() {
+      if (window.location.hash === '#home') {
+        setTimeout(() => {
+          scrollToTop();
+        }, 100);
+      }
+    });
+
+    // Enhanced dark mode toggle with flowing animation
+    document.getElementById('dm-toggle').addEventListener('click', function(e) {
+      const button = e.currentTarget;
+      
+      // Add animation class for ripple effect
+      button.classList.add('animate');
+      
+      // Toggle dark mode
+      document.documentElement.classList.toggle('dark');
+      
+      // Remove animation class after animation completes
+      setTimeout(() => {
+        button.classList.remove('animate');
+      }, 600);
+    });
+
+    // Modal logic
+    const modal = document.getElementById('blog-modal');
+    const backBtn = document.getElementById('back-btn');
+    const blogCards = document.querySelectorAll('article.group');
+
+    // Open modal when clicking on blog cards
+    blogCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const blogType = card.getAttribute('data-blog');
+        if (blogType) {
+          // Show the specific blog post
+          const allPosts = document.querySelectorAll('.blog-post');
+          allPosts.forEach(post => post.style.display = 'none');
+          
+          const targetPost = document.querySelector(`[data-post="${blogType}"]`);
+          if (targetPost) {
+            targetPost.style.display = 'block';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+          }
+        }
+      });
+    });
+
+    // Close modal when clicking back button
+    backBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close modal when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Close modal when clicking outside content area
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
