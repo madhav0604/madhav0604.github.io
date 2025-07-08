@@ -1,0 +1,256 @@
+/* 1. Custom fonts */
+@font-face {
+  font-family: "Dalton White";
+  src: url("fonts/Dalton\ White.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rustic Roadway";
+  src: url("fonts/RusticRoadway.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Agale";
+  src: url("fonts/Agale.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Utility font classes */
+.font-agale { 
+  font-family: "Agale", serif; 
+}
+
+.font-rustic { 
+  font-family: "RusticRoadway", serif; 
+}
+
+/* 3. Logo link styling */
+.logo-link {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
+
+/* 4. Global dark mode transition synchronization */
+:root {
+  --transition-duration: 0.6s;
+  --transition-timing: ease-in-out;
+}
+
+/* Global transition for dark mode elements */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.6s;
+}
+
+/* Preserve existing transitions for specific elements */
+.transition-all,
+.transition-colors,
+.transition-opacity,
+.transition-transform {
+  transition-duration: 0.6s !important;
+}
+
+/* 5. Hero section with dark mode dimming */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-image: url('https://images.pexels.com/photos/804564/pexels-photo-804564.jpeg');
+  background-size: cover;
+  background-position: top center;
+  margin-top: -90px;
+  padding-top: 80px;
+  z-index: -1;
+  transition: filter var(--transition-duration) var(--transition-timing);
+}
+
+/* Slightly dim hero image in dark mode */
+.dark .hero-section {
+  filter: brightness(0.85) contrast(1.1);
+}
+
+/* 6. Hero overlay adjustments for better dark mode integration */
+.hero-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 255, 255, 0.3) 50%,
+    #ffffff
+  );
+  transition: background var(--transition-duration) var(--transition-timing);
+}
+
+.dark .hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    #000000
+  );
+}
+
+/* 7. Hero title with synchronized transition */
+.hero-title {
+  font-family: "Dalton White", serif;
+  font-size: 8vw;
+  line-height: 1;
+  font-weight: 700;
+  color: #000;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2.5rem;
+  padding-top: 80px;
+  transition: color var(--transition-duration) var(--transition-timing);
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 9rem;
+    padding-right: 6rem;
+    padding-top: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-title {
+    font-size: 12rem;
+    padding-top: 80px;
+  }
+}
+
+.dark .hero-title { 
+  color: #fff; 
+}
+
+/* 8. Navbar synchronized transition */
+#navbar {
+  transition: all var(--transition-duration) var(--transition-timing);
+}
+
+/* 9. About section fade-in animation */
+#about-text {
+  transition: all 0.7s ease-out;
+}
+
+#about-text.opacity-0 {
+  opacity: 0;
+  transform: translateY(2.5rem);
+}
+
+#about-text.opacity-100 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 10. Fade-in animation for project details */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 11. Smooth scrolling */
+html { 
+  scroll-behavior: smooth; 
+}
+
+/* 12. Dark mode toggle animation */
+#dm-toggle {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#dm-toggle:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#dm-toggle svg {
+  transition: transform 0.4s ease-in-out;
+}
+
+#dm-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+/* 13. Custom scrollbar styling for horizontal scroll */
+.horizontal-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* 14. Image protection styles */
+.protected-image {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+/* 15. Optional gradient helper */
+.fade-bottom {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.35) 60%,
+    #121417 100%
+  );
+  pointer-events: none;
+}
