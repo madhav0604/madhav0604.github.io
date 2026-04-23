@@ -1,5 +1,3 @@
-
-
 /* Enhanced Portfolio Styles */
 
 /* Hero Section Styles */
@@ -492,4 +490,17 @@ html {
     #121417 100%
   );
   pointer-events: none;
+}
+
+.tilt-wrap {
+  transition: none !important;
+}
+
+.tilt-wrap * {
+  transition: none !important;
+}
+.tilt-wrap {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
