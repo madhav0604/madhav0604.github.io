@@ -1,467 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pursuits | madhavvij</title>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pursuits | madhavvij</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode:'class',
+      theme:{ extend:{
+        fontFamily:{ dalton:['Dalton White','serif'], sans:['Inter','sans-serif'] },
+        colors:{ bg:'#ffffff', surface:'#f0e7db', accent:'#0ab0ff' }
+      }}
+    };
+  </script>
+  <style>
+    /* ── NUCLEAR LAYOUT OVERRIDES — Tailwind cannot touch these ── */
+    /* Scroll wrapper handles overflow-x. Inner row is overflow:visible. */
+    .gallery-scroll {
+      overflow-x: auto !important;
+      overflow-y: visible !important;
+      width: 100% !important;
+      padding: 36px 0 64px 0 !important; /* vertical padding = tilt headroom */
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .gallery-scroll::-webkit-scrollbar { display: none !important; }
+    .gallery-row {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      overflow: visible !important;
+      align-items: flex-start !important;
+      gap: 20px !important;
+      padding: 0 40px !important;
+      width: max-content !important;
+      min-width: 100% !important;
+      box-sizing: border-box !important;
+    }
 
-    <!-- Google Fonts & Custom CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    .gallery-section {
+      overflow: visible !important;
+      margin-bottom: 4rem !important;
+    }
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              agale: ['Agale', 'serif'],
-              dalton: ['Dalton White', 'serif'],
-              rustic: ['RusticRoadway', 'serif'],
-              sans: ['Space Grotesk', 'sans-serif'],
-            },
-            colors: {
-              bg: '#ffffff',
-              surface: '#f0e7db',
-              accent: '#0ab0ff',
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      /* Disable image selection and dragging */
-      .protected-image {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -webkit-user-drag: none;
-        -khtml-user-drag: none;
-        -moz-user-drag: none;
-        -o-user-drag: none;
-        user-drag: none;
-        pointer-events: none;
-      }
-      
-      .image-container {
-        position: relative;
-      }
-      
-      .image-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1;
-        pointer-events: auto;
-      }
+    /* ── TITLE CARDS ── */
+    .title-card {
+      flex-shrink: 0 !important;
+      width: 280px !important;
+      height: 480px !important;
+      border-radius: 16px !important;
+      background: #f3f4f6 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative !important;
+      transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1) !important;
+    }
+    .title-card:hover { transform: scale(1.025) !important; }
+    .dark .title-card { background: #1f2937 !important; }
 
-      /* Custom scrollbar styling */
-      .horizontal-scroll {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      
-      .horizontal-scroll::-webkit-scrollbar {
-        display: none;
-      }
+    /* ── TILT OUTER WRAPPER — gets the 3D transform, NO overflow:hidden ── */
+    .tilt-wrap {
+      flex-shrink: 0 !important;
+      position: relative !important;
+      overflow: visible !important;   /* CRITICAL — never clips the tilted card */
+      will-change: transform !important;
+      cursor: pointer !important;
+      border-radius: 16px !important;
+    }
 
-      /* Smooth scrolling */
-      .horizontal-scroll {
-        scroll-behavior: smooth;
-      }
-    </style>
-  </head>
-  <body class="min-h-screen bg-white text-black font-sans antialiased transition-colors duration-600 dark:bg-black dark:text-white">
-    <!-- Dark‑mode toggle -->
-    <button id="dm-toggle" class="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-surface text-black shadow-lg transition hover:bg-black hover:text-white dark:bg-black dark:text-white dark:hover:bg-surface dark:hover:text-black">
-      <svg class="h-5 w-5 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-      </svg>
-    </button>
+    /* ── PHOTO INNER — clips the image with rounded corners ── */
+    .photo-inner {
+      width: 100% !important;
+      height: 100% !important;
+      overflow: hidden !important;
+      border-radius: 16px !important;
+      position: relative !important;
+    }
 
-    <!-- ====== NAVBAR ====== -->
-    <header id="navbar" class="sticky top-0 z-50 w-full transition-all duration-500 ease-in-out">
-      <nav class="flex w-full items-center justify-between gap-6 px-6 py-3 lg:px-10">
-        <!-- logo image -->
-        <a href="javascript:void(0)" onclick="navigateToHome()" class="leading-none logo-link">
+    .photo-inner img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block !important;
+      transition: transform 0.65s ease !important;
+      user-select: none !important;
+      pointer-events: none !important;
+      -webkit-user-drag: none !important;
+    }
+    .tilt-wrap:hover .photo-inner img {
+      transform: scale(1.055) !important;
+    }
 
-         <img src="https://i.ibb.co/Xfz4KQSZ/mvlogo.png" alt="Logo" class="h-14 w-14" />
-        </a>
+    /* scrollbar hidden */
+    .horizontal-scroll { scrollbar-width: none; }
+    .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        <ul class="hidden gap-6 text-base font-medium lg:flex">
-          <li><a href="javascript:void(0)" onclick="navigateToSection('about')" class="hover:text-accent">about</a></li>
-          <li><a href="blog.html" class="hover:text-accent">blogs</a></li>
-          <li><a href="javascript:void(0)" onclick="navigateToSection('projects')" class="hover:text-accent">projects</a></li>
-          <li><a href="pursuits.html" class="hover:text-accent">pursuits</a></li>
-        </ul>
+    /* dark mode title text */
+    .dark .title-card h2 { color: white !important; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black font-sans antialiased dark:bg-black dark:text-white" style="transition:background-color 0.6s,color 0.6s;">
 
-        <div class="flex items-center gap-2 text-base font-medium">
-          <a href="mailto:connect@madhavvij.com" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">email</a>
-          <a href="https://github.com/madhav0604" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">github</a>
-          <a href="https://linkedin.com/in/vijmadhav" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">linkedin</a>
+  <!-- Dark mode toggle -->
+  <button id="dm-toggle" class="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-surface text-black shadow-lg transition hover:bg-black hover:text-white dark:bg-black dark:text-white dark:hover:bg-surface dark:hover:text-black">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+    </svg>
+  </button>
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="sticky top-0 z-50 w-full transition-all duration-500">
+    <nav class="relative flex w-full items-center justify-between gap-6 px-6 py-3 lg:px-10">
+      <a href="javascript:void(0)" onclick="navigateToHome()" class="leading-none logo-link">
+        <img src="https://i.ibb.co/Xfz4KQSZ/mvlogo.png" alt="Logo" class="h-14 w-14 dark:invert transition-all duration-300"/>
+      </a>
+      <ul class="hidden gap-8 text-lg font-medium lg:flex absolute left-1/2 -translate-x-1/2 tracking-tight">
+        <li><a href="javascript:void(0)" onclick="navigateToSection('about')" class="hover:text-accent transition-colors duration-200">about</a></li>
+        <li><a href="javascript:void(0)" onclick="navigateToSection('projects')" class="hover:text-accent transition-colors duration-200">projects</a></li>
+        <li><a href="pursuits.html" class="hover:text-accent transition-colors duration-200">pursuits</a></li>
+      </ul>
+      <div class="flex items-center gap-2 text-base font-medium">
+        <a href="mailto:connect@madhavvij.com" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">email</a>
+        <a href="https://github.com/madhav0604" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">github</a>
+        <a href="https://linkedin.com/in/vijmadhav" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent">linkedin</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="py-20 px-6 text-center bg-white dark:bg-black">
+    <h1 class="font-dalton text-6xl md:text-8xl font-bold text-black dark:text-white">Pursuits</h1>
+  </section>
+
+  <!-- GALLERIES -->
+  <main style="width:100%;overflow:visible;">
+
+    <!-- Nature -->
+    <section class="gallery-section">
+      <div class="gallery-scroll"><div class="gallery-row">
+        <div class="title-card">
+          <h2 class="font-dalton text-5xl font-bold text-black">Nature</h2>
         </div>
-      </nav>
-    </header>
-
-    <!-- ====== HERO SECTION ====== -->
-    <section class="py-24 px-6 lg:px-10 bg-white dark:bg-black">
-      <div class="max-w-6xl mx-auto text-center">
-        <h1 class="font-dalton text-6xl md:text-8xl font-bold mb-8 text-black dark:text-white">Pursuits</h1>
-        <p class="text-2xl text-gray-600 dark:text-gray-300 mb-16"></p>
+        <div class="tilt-wrap" style="width:380px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczOpZBHFZ_S6aeX4MfIYylb2H5dG9A1Qe4LSHMEqp3payK_fhDfZz5eWoO9m1P1i5mcXlmT6rCC_2h7lGZR0D-cqpSvQlfJSLRW0PZzg3OTwIBXX-enfVaHkKQoyymF7h2ko7kK7du7iktkV_sZFiBEEPw=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:600px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczPuT_dnEa3876laBD_VGQZw-Pcu3yVgAp3JPk-xp6mMiJSemrPcj9LX7h9a59jSoEGyaAyGCs0MSN8RFQoDHTI0uSTQ8WSEHu4RFB-Uo57f6Jao8M2jxB8vEWm4D7sVvMsjheqUBm7bNagYTojvJT6FFg=w2250-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:320px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMMO5bblO7hb5Sm9DnDabPsN1NTZw5GM_3dyQeauiEVEaGGgSNyOSu8nFFZ87so97VggtdeNLkJZqFa980J5YDc14n9Qf3BBPCRF-ClrzesplT8Izahh4hrycZovMfIRku3hEJDdEOhOA8ZPP6u_myRnA=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:380px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczNQzGgaSYyvS7hQSQSzciyuBatYrjHNS3ur4EDIOu2gNwnQ-p-Bj0MPe81eEwqnaeSDmK8Oq0YyvEl94YwhKP2yiaLk_fPKjKeV4An9b_Q4Vk6dwfPiJAvpufzaxsSqvo0XerUliVwGK6WniWUQod9-8A=w1282-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:380px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczN6JCiMe0rfLIXaiNMt-9-IbTHaKgUi_KKWrE8ZMhE16kljKWqyBFCNP24-ezKGD736pTUqER5ItfFjY6R5eeqN7_XxkFeiTvpXBQ2kGa-L-ro5q-LWBkAagcXrUWJAv5onSJw4OxHVqQycduc4mVod7w=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:660px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczOQcA6MwpV3kYiaL0I6Yk7pPljRJjFD5dokYLuroprl7Kctp8nc0AuiTSDJ0DwB-MjgVkD2of2cuzsvnMRJNygZz6pMGJMzvymLigb36PDC1LAY8a_szyabWAl1Eo8glBb2wLbhsr07ug5QZ2JsGnVK8A=w1536-h1024-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ====== PHOTO GALLERIES ====== -->
-    <main class="w-full bg-white dark:bg-black">
-      
-      <!-- Nature Section -->
-      <section class="mb-24">
-        <div class="flex gap-6 overflow-x-auto horizontal-scroll px-6 lg:px-10 items-start">
-          <!-- Title Card -->
-          <div class="flex-none w-96 h-[32rem] relative flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <h2 class="font-dalton text-5xl font-bold text-black dark:text-white">Nature</h2>
-          </div>
-          
-          <!-- Photo 1 - Portrait -->
-          <div class="flex-none w-[24rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczOpZBHFZ_S6aeX4MfIYylb2H5dG9A1Qe4LSHMEqp3payK_fhDfZz5eWoO9m1P1i5mcXlmT6rCC_2h7lGZR0D-cqpSvQlfJSLRW0PZzg3OTwIBXX-enfVaHkKQoyymF7h2ko7kK7du7iktkV_sZFiBEEPw=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="Half sunset" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Half Sunset</p>
-                <p class="text-sm opacity-90">Weekend trek</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 2 - Landscape -->
-          <div class="flex-none w-[40rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczPuT_dnEa3876laBD_VGQZw-Pcu3yVgAp3JPk-xp6mMiJSemrPcj9LX7h9a59jSoEGyaAyGCs0MSN8RFQoDHTI0uSTQ8WSEHu4RFB-Uo57f6Jao8M2jxB8vEWm4D7sVvMsjheqUBm7bNagYTojvJT6FFg=w2250-h1688-s-no-gm?authuser=0" 
-                 alt="Trail of the skies" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Trail of the Skies</p>
-                <p class="text-sm opacity-90">Sunset colors</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 3 - Portrait -->
-          <div class="flex-none w-80 h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczMMO5bblO7hb5Sm9DnDabPsN1NTZw5GM_3dyQeauiEVEaGGgSNyOSu8nFFZ87so97VggtdeNLkJZqFa980J5YDc14n9Qf3BBPCRF-ClrzesplT8Izahh4hrycZovMfIRku3hEJDdEOhOA8ZPP6u_myRnA=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="Langoor" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Langur</p>
-                <p class="text-sm opacity-90">Landour's grandeur</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 4 - Landscape -->
-          <div class="flex-none w-[24rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczNQzGgaSYyvS7hQSQSzciyuBatYrjHNS3ur4EDIOu2gNwnQ-p-Bj0MPe81eEwqnaeSDmK8Oq0YyvEl94YwhKP2yiaLk_fPKjKeV4An9b_Q4Vk6dwfPiJAvpufzaxsSqvo0XerUliVwGK6WniWUQod9-8A=w1282-h1688-s-no-gm?authuser=0" 
-                 alt="Forest path" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Forest Path</p>
-                <p class="text-sm opacity-90">Morning walk</p>
-              </div>
-            </div>
-          </div>
-          <!-- Photo 5 - Portrait -->
-          <div class="flex-none w-[24rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczN6JCiMe0rfLIXaiNMt-9-IbTHaKgUi_KKWrE8ZMhE16kljKWqyBFCNP24-ezKGD736pTUqER5ItfFjY6R5eeqN7_XxkFeiTvpXBQ2kGa-L-ro5q-LWBkAagcXrUWJAv5onSJw4OxHVqQycduc4mVod7w=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="Forest path" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Forest Path</p>
-                <p class="text-sm opacity-90">Morning walk</p>
-              </div>
-            </div>
-          </div>
-          <!-- Photo 6 - Landscape -->
-          <div class="flex-none w-[44rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczOQcA6MwpV3kYiaL0I6Yk7pPljRJjFD5dokYLuroprl7Kctp8nc0AuiTSDJ0DwB-MjgVkD2of2cuzsvnMRJNygZz6pMGJMzvymLigb36PDC1LAY8a_szyabWAl1Eo8glBb2wLbhsr07ug5QZ2JsGnVK8A=w1536-h1024-s-no-gm?authuser=0" 
-                 alt="Forest path" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">The hills</p>
-                <p class="text-sm opacity-90">Stormy silence</p>
-              </div>
-            </div>
+    <!-- Lifestyle -->
+    <section class="gallery-section">
+      <div class="gallery-scroll"><div class="gallery-row">
+        <div class="title-card">
+          <h2 class="font-dalton text-5xl font-bold text-black">Lifestyle</h2>
+        </div>
+        <div class="tilt-wrap" style="width:460px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczPbfUEYDhr8IXSS8wWu9bZ2ABYNYyc-q_JkeabduLOx1njs3sxOX4Oqn7d6kj_uH5jcyXcv6R1jk_H52vwERpdACBPftWNogg7qz--HnoGdIaHU6gtv_sldONb6t8WVlCQ4cAfORCLyg0Y79kCi-idjbg=w1609-h905-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
           </div>
         </div>
-      </section>
-
-      <!-- Lifestyle Section -->
-      <section class="mb-24">
-        <div class="flex gap-6 overflow-x-auto horizontal-scroll px-6 lg:px-10 items-start">
-          <!-- Title Card -->
-          <div class="flex-none w-96 h-[32rem] relative flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <h2 class="font-dalton text-5xl font-bold text-black dark:text-white">Lifestyle</h2>
-          </div>
-          
-          <!-- Photo 1 - Landscape -->
-          <div class="flex-none w-[30rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczPbfUEYDhr8IXSS8wWu9bZ2ABYNYyc-q_JkeabduLOx1njs3sxOX4Oqn7d6kj_uH5jcyXcv6R1jk_H52vwERpdACBPftWNogg7qz--HnoGdIaHU6gtv_sldONb6t8WVlCQ4cAfORCLyg0Y79kCi-idjbg=w1609-h905-s-no-gm?authuser=0" 
-                 alt="Broken Rhythm" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Broken Rhythm</p>
-                <p class="text-sm opacity-90">Daily patterns</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 2 - Portrait -->
-          <div class="flex-none w-80 h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczOOhmztU2PwjGRaGaS1s99IyJeg__9kqFhGEQ0HYfSKAYHhZSM9g3bAYvAwbL3ENa4Vl5t9NDKdKtblkFybPfV_8AG0hD2m1FpwqlH-sAfV6npR8zvy6mWxUxkL3OiW5SPkD83hsTLrJZ9F3kmvkBqp-g=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="Beach sunset" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Day moon</p>
-                <p class="text-sm opacity-90">City vibes</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 3 - Landscape -->
-          <div class="flex-none w-[28rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczNPC8Ca-Ot5mjmt3iMbUidlFihIMYpqNjPqRN2kXHw4VqrZ5xshhi9kTJJ0uWjCt5F-L9LBEtefeUbw10JddlXsg2Yo0pMEyczNxLwz-vJfV8rbkqshzD9dcH8Lk-ZH4M_c2ouZLaKkomvQ9LbVruRGiA=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="City exploration" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Urban Discovery</p>
-                <p class="text-sm opacity-90">City life</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 4 - Portrait -->
-          <div class="flex-none w-[24rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczMXbl54pUKIGe2zGi8OPzfvH7drVZM9z5svl4QsMkdDuxKZzWnrDBOYnmi3FzVFSgm4v7HLhkPdG7f10q6p1b26qIifGI0j-X3sMajEcctHd_dskWn3hA_0wjhARzMT8_1u8w9ERHObIr029Tm4BtLhyg=w1490-h1986-s-no-gm?authuser=0" 
-                 alt="Coffee moment" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Coffee Moments</p>
-                <p class="text-sm opacity-90">Daily ritual</p>
-              </div>
-            </div>
+        <div class="tilt-wrap" style="width:320px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczOOhmztU2PwjGRaGaS1s99IyJeg__9kqFhGEQ0HYfSKAYHhZSM9g3bAYvAwbL3ENa4Vl5t9NDKdKtblkFybPfV_8AG0hD2m1FpwqlH-sAfV6npR8zvy6mWxUxkL3OiW5SPkD83hsTLrJZ9F3kmvkBqp-g=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
           </div>
         </div>
-      </section>
-
-      <!-- Macro Section -->
-      <section class="mb-24">
-        <div class="flex gap-6 overflow-x-auto horizontal-scroll px-6 lg:px-10 items-start">
-          <!-- Title Card -->
-          <div class="flex-none w-96 h-[32rem] relative flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <h2 class="font-dalton text-5xl font-bold text-black dark:text-white">Macro</h2>
-          </div>
-          
-          <!-- Photo 1 - Portrait -->
-          <div class="flex-none w-80 h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczN5BLppfaKup1GbWeN_WSnuIhoFocw-4lcl45RdsX31UdrSnIF7mrpcBIeLzgwpDDoRxIVH8NI5GQ3DRgrXTytOxysyjnNbNvtnx7DE4s6VQXB0lqeN3nIayxqRVMl1SwbY3cbShtlhVpdqs-NQXDZjrA=w1314-h1688-s-no-gm?authuser=0" 
-                 alt="Spider eyes" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Spider Eyes</p>
-                <p class="text-sm opacity-90">Close-up detail</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 2 - Landscape -->
-          <div class="flex-none w-[28rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczNidCR5qysxPFbo9DbCaIPIWEHI8cgJGxH2AIZpPtLuh7YCHBcvbgvj_cqLjbGWt4VYAejXH1TWEyd020Ju1Xmd86GWo1cnjbo3N8UQw57nAiP6gP6p9lZUasMcsLyzPJ0lK7d42A6EvtwXe7XlNvD68Q=w1266-h1688-s-no-gm?authuser=0" 
-                 alt="Water droplets" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Flower</p>
-                <p class="text-sm opacity-90"></p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 3 - Portrait -->
-          <div class="flex-none w-[40rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczNbzqxt2obqfvNz478r_xJB6td_yNi4AWSS9Fps77_h7ImQWI_tCV2Iaskb6yuKVXOS80Rg54-BEvNjX65AhWQL2QtOU24VZOhTSo311Xw7J7KX9D29XTrkPVMx1CLtDzpPB07kCOHdqCrXLRi3oYAr4g=w2250-h1688-s-no-gm?authuser=0" 
-                 alt="Flower detail" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Flower Detail</p>
-                <p class="text-sm opacity-90">Nature's patterns</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Photo 4 - Landscape -->
-          <div class="flex-none w-[30rem] h-[32rem] relative group image-container overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1539650116574-75c0c6d73a0e?w=800&h=600&fit=crop" 
-                 alt="Texture study" 
-                 class="w-full h-full object-cover protected-image group-hover:scale-105 transition-transform duration-700" 
-                 oncontextmenu="return false;" 
-                 ondragstart="return false;" />
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-              <div class="text-white">
-                <p class="font-semibold text-lg">Texture Study</p>
-                <p class="text-sm opacity-90">Surface details</p>
-              </div>
-            </div>
+        <div class="tilt-wrap" style="width:430px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczNPC8Ca-Ot5mjmt3iMbUidlFihIMYpqNjPqRN2kXHw4VqrZ5xshhi9kTJJ0uWjCt5F-L9LBEtefeUbw10JddlXsg2Yo0pMEyczNxLwz-vJfV8rbkqshzD9dcH8Lk-ZH4M_c2ouZLaKkomvQ9LbVruRGiA=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
           </div>
         </div>
-      </section>
-    </main>
-
-    <!-- ====== FOOTER ====== -->
-    <footer class="border-t border-black/10 bg-white py-10 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-black dark:text-gray-400">
-      <div class="max-w-4xl mx-auto px-6">
-        <p class="mb-4">© <span id="year"></span> madhavvij<a href="https://pages.github.com/" class="underline hover:text-accent"></a></p>
-        
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-          <h4 class="font-semibold mb-2 text-gray-700 dark:text-gray-300">Image Credits</h4>
-          <div class="space-y-1 text-xs">
-            <p>Photography: © madhavvij</p>
-            <!--<p>Additional images from <a href="https://unsplash.com/" class="hover:text-accent underline" target="_blank" rel="noopener">Unsplash</a></p>-->
+        <div class="tilt-wrap" style="width:380px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMXbl54pUKIGe2zGi8OPzfvH7drVZM9z5svl4QsMkdDuxKZzWnrDBOYnmi3FzVFSgm4v7HLhkPdG7f10q6p1b26qIifGI0j-X3sMajEcctHd_dskWn3hA_0wjhARzMT8_1u8w9ERHObIr029Tm4BtLhyg=w1490-h1986-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
           </div>
         </div>
       </div>
-    </footer>
+    </section>
 
-    <script>
-      // Function to scroll to top without offset
-      function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    <!-- Macro -->
+    <section class="gallery-section">
+      <div class="gallery-scroll"><div class="gallery-row">
+        <div class="title-card">
+          <h2 class="font-dalton text-5xl font-bold text-black">Macro</h2>
+        </div>
+        <div class="tilt-wrap" style="width:320px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczN5BLppfaKup1GbWeN_WSnuIhoFocw-4lcl45RdsX31UdrSnIF7mrpcBIeLzgwpDDoRxIVH8NI5GQ3DRgrXTytOxysyjnNbNvtnx7DE4s6VQXB0lqeN3nIayxqRVMl1SwbY3cbShtlhVpdqs-NQXDZjrA=w1314-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:430px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczNidCR5qysxPFbo9DbCaIPIWEHI8cgJGxH2AIZpPtLuh7YCHBcvbgvj_cqLjbGWt4VYAejXH1TWEyd020Ju1Xmd86GWo1cnjbo3N8UQw57nAiP6gP6p9lZUasMcsLyzPJ0lK7d42A6EvtwXe7XlNvD68Q=w1266-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+        <div class="tilt-wrap" style="width:600px;height:480px;">
+          <div class="photo-inner">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczNbzqxt2obqfvNz478r_xJB6td_yNi4AWSS9Fps77_h7ImQWI_tCV2Iaskb6yuKVXOS80Rg54-BEvNjX65AhWQL2QtOU24VZOhTSo311Xw7J7KX9D29XTrkPVMx1CLtDzpPB07kCOHdqCrXLRi3oYAr4g=w2250-h1688-s-no-gm" alt="" oncontextmenu="return false" ondragstart="return false"/>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-black/10 bg-white py-10 text-center text-sm text-gray-500 dark:border-white/10 dark:bg-black dark:text-gray-400">
+    <div class="max-w-4xl mx-auto px-6">
+      <p>© <span id="year"></span> madhavvij</p>
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+        <p class="text-xs">Photography: © madhavvij</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function navigateToHome() { window.location.href = 'index.html#home'; }
+    function navigateToSection(s) { window.location.href = 'index.html#' + s; }
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    function updateNavbar() {
+      if (window.scrollY === 0) {
+        navbar.classList.remove('bg-white/80','backdrop-blur','dark:bg-black/80');
+        navbar.classList.add('bg-transparent');
+      } else {
+        navbar.classList.add('bg-white/80','backdrop-blur','dark:bg-black/80');
+        navbar.classList.remove('bg-transparent');
       }
+    }
+    window.addEventListener('scroll', updateNavbar);
+    window.addEventListener('load', updateNavbar);
 
-      // Navigation functions (consistent with other pages)
-      function navigateToHome() {
-        window.location.href = 'index.html#home';
-      }
+    // Dark mode
+    document.getElementById('dm-toggle').addEventListener('click', function() {
+      document.documentElement.classList.toggle('dark');
+    });
 
-      function navigateToSection(section) {
-        window.location.href = `index.html#${section}`;
-      }
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-      // Navbar transparency and blur on scroll (seamless, no border)
-      const navbar = document.getElementById('navbar');
+    // ── TILT EFFECT ──────────────────────────────────────────
+    (function () {
+      var MAX = 7;    // max tilt degrees
+      var SC  = 1.035; // hover lift scale
+      var LRP = 0.09;  // lerp smoothness
 
-      function updateNavbar() {
-        if (window.scrollY === 0) {
-          // At top: transparent background, no blur
-          navbar.classList.remove('bg-white/80', 'backdrop-blur', 'dark:bg-black/80');
-          navbar.classList.add('bg-transparent');
-        } else {
-          // Scrolled down: add background and blur (seamless, no border)
-          navbar.classList.add('bg-white/80', 'backdrop-blur', 'dark:bg-black/80');
-          navbar.classList.remove('bg-transparent');
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      document.querySelectorAll('.tilt-wrap').forEach(function (wrap) {
+        // Ensure wrap and all ancestors don't clip
+        wrap.style.transformOrigin = 'center center';
+        wrap.style.zIndex = '1';
+
+        var rx = 0, ry = 0, sc = 1;
+        var trx = 0, try_ = 0, tsc = 1;
+        var raf = null;
+
+        function tick() {
+          rx  = lerp(rx,  trx,  LRP);
+          ry  = lerp(ry,  try_, LRP);
+          sc  = lerp(sc,  tsc,  LRP);
+          // perspective on the parent creates the 3D space cleanly
+          wrap.style.transform =
+            'perspective(900px) rotateX(' + rx.toFixed(3) + 'deg) rotateY(' + ry.toFixed(3) + 'deg) scale(' + sc.toFixed(4) + ')';
+          var done =
+            Math.abs(rx - trx)  < 0.004 &&
+            Math.abs(ry - try_) < 0.004 &&
+            Math.abs(sc - tsc)  < 0.0004;
+          if (done) { raf = null; }
+          else      { raf = requestAnimationFrame(tick); }
         }
-      }
 
-      // Listen for scroll events
-      window.addEventListener('scroll', updateNavbar);
+        function kick() { if (!raf) raf = requestAnimationFrame(tick); }
 
-      // Initialize navbar state on page load
-      window.addEventListener('load', updateNavbar);
+        wrap.addEventListener('mouseenter', function () {
+          wrap.style.zIndex = '10'; // lift above siblings
+        });
 
-      // Handle navigation from other pages with hash
-      window.addEventListener('load', function() {
-        if (window.location.hash === '#home') {
-          setTimeout(() => {
-            scrollToTop();
-          }, 100);
-        }
-      });
+        wrap.addEventListener('mousemove', function (e) {
+          var r = wrap.getBoundingClientRect();
+          var xp = (e.clientX - r.left)  / r.width  - 0.5; // -0.5 to +0.5
+          var yp = (e.clientY - r.top)   / r.height - 0.5;
+          trx  = -yp * MAX * 2;  // top cursor → card tilts away (negative X rotation)
+          try_ =  xp * MAX * 2;  // right cursor → card tilts right (positive Y rotation)
+          tsc  = SC;
+          kick();
+        });
 
-      // Enhanced dark mode toggle with flowing animation
-      document.getElementById('dm-toggle').addEventListener('click', function(e) {
-        const button = e.currentTarget;
-        
-        // Add animation class for ripple effect
-        button.classList.add('animate');
-        
-        // Toggle dark mode
-        document.documentElement.classList.toggle('dark');
-        
-        // Remove animation class after animation completes
-        setTimeout(() => {
-          button.classList.remove('animate');
-        }, 600);
-      });
-
-      // Footer year
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // Additional protection against right-click on images
-      document.addEventListener('DOMContentLoaded', function() {
-        const images = document.querySelectorAll('.protected-image');
-        
-        images.forEach(img => {
-          // Disable right-click context menu
-          img.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-          });
-          
-          // Disable drag and drop
-          img.addEventListener('dragstart', function(e) {
-            e.preventDefault();
-            return false;
-          });
-          
-          // Disable image selection
-          img.addEventListener('selectstart', function(e) {
-            e.preventDefault();
-            return false;
-          });
+        wrap.addEventListener('mouseleave', function () {
+          wrap.style.zIndex = '1';
+          trx = 0; try_ = 0; tsc = 1;
+          kick();
         });
       });
-    </script>
-  </body>
+    })();
+  </script>
+
+</body>
 </html>
