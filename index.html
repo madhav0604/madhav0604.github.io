@@ -74,15 +74,14 @@
 
     <!-- ====== NAVBAR ====== -->
     <header id="navbar" class="sticky top-0 z-50 w-full transition-all duration-500 ease-in-out">
-      <nav class="flex w-full items-center justify-between gap-6 px-6 py-3 lg:px-10">
+      <nav class="relative flex w-full items-center justify-between gap-6 px-6 py-3 lg:px-10">
         <!-- logo image -->
         <a href="javascript:void(0)" onclick="scrollToTop()" class="leading-none logo-link">
-         <img src="https://i.ibb.co/Xfz4KQSZ/mvlogo.png" alt="Logo" class="h-14 w-14" />
+         <img src="https://i.ibb.co/Xfz4KQSZ/mvlogo.png" alt="Logo" class="h-14 w-14 dark:invert transition-all duration-300" />
         </a>
 
-        <ul class="hidden gap-6 text-base font-medium lg:flex">
+        <ul class="hidden gap-8 text-lg font-medium lg:flex absolute left-1/2 -translate-x-1/2 tracking-tight">
           <li><a href="#about" class="hover:text-accent transition-colors duration-200">about</a></li>
-          <li><a href="blog.html" class="hover:text-accent transition-colors duration-200">blogs</a></li>
           <li><a href="#projects" class="hover:text-accent transition-colors duration-200">projects</a></li>
           <li><a href="pursuits.html" class="hover:text-accent transition-colors duration-200">pursuits</a></li>
         </ul>
