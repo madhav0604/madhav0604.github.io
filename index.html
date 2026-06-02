@@ -80,18 +80,44 @@
          <img src="https://i.ibb.co/Xfz4KQSZ/mvlogo.png" alt="Logo" class="h-14 w-14 dark:invert transition-all duration-300" />
         </a>
 
+        <!-- Desktop nav links -->
         <ul class="hidden gap-8 text-lg font-medium lg:flex absolute left-1/2 -translate-x-1/2 tracking-tight">
           <li><a href="#about" class="hover:text-accent transition-colors duration-200">about</a></li>
           <li><a href="#projects" class="hover:text-accent transition-colors duration-200">projects</a></li>
           <li><a href="pursuits.html" class="hover:text-accent transition-colors duration-200">pursuits</a></li>
         </ul>
 
-        <div class="flex items-center gap-2 text-base font-medium">
+        <!-- Desktop social links -->
+        <div class="hidden lg:flex items-center gap-2 text-base font-medium">
           <a href="mailto:connect@madhavvij.com" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent transition-all duration-200">email</a>
           <a href="https://github.com/madhav0604" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent transition-all duration-200">github</a>
           <a href="https://linkedin.com/in/vijmadhav" class="rounded-full px-3 py-1 hover:bg-surface hover:text-accent transition-all duration-200">linkedin</a>
         </div>
+
+        <!-- Mobile hamburger button -->
+        <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface dark:hover:bg-neutral-800 transition-colors duration-200" aria-label="Open menu">
+          <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
       </nav>
+
+      <!-- Mobile menu dropdown -->
+      <div id="mobile-menu" class="lg:hidden overflow-hidden transition-all duration-400 ease-in-out" style="max-height: 0; opacity: 0;">
+        <div class="bg-bg/95 dark:bg-neutral-900/95 backdrop-blur border-t border-neutral-200/50 dark:border-neutral-700/50 px-8 py-8 flex flex-col gap-1">
+          <a href="#about" onclick="closeMobileMenu()" class="mobile-nav-link text-xl font-medium py-3 border-b border-neutral-100 dark:border-neutral-800 hover:text-accent hover:pl-2 transition-all duration-200">about</a>
+          <a href="#projects" onclick="closeMobileMenu()" class="mobile-nav-link text-xl font-medium py-3 border-b border-neutral-100 dark:border-neutral-800 hover:text-accent hover:pl-2 transition-all duration-200">projects</a>
+          <a href="pursuits.html" onclick="closeMobileMenu()" class="mobile-nav-link text-xl font-medium py-3 border-b border-neutral-100 dark:border-neutral-800 hover:text-accent hover:pl-2 transition-all duration-200">pursuits</a>
+          <div class="pt-5 flex flex-col gap-1">
+            <a href="mailto:connect@madhavvij.com" class="mobile-nav-link text-base text-neutral-500 dark:text-neutral-400 py-2 hover:text-accent hover:pl-2 transition-all duration-200">email</a>
+            <a href="https://github.com/madhav0604" class="mobile-nav-link text-base text-neutral-500 dark:text-neutral-400 py-2 hover:text-accent hover:pl-2 transition-all duration-200">github</a>
+            <a href="https://linkedin.com/in/vijmadhav" class="mobile-nav-link text-base text-neutral-500 dark:text-neutral-400 py-2 hover:text-accent hover:pl-2 transition-all duration-200">linkedin</a>
+          </div>
+        </div>
+      </div>
     </header>
 
     <!-- ====== HERO ====== -->
@@ -662,6 +688,35 @@
       function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      function closeMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const hamburger = document.getElementById('hamburger-icon');
+        const close = document.getElementById('close-icon');
+        menu.style.maxHeight = '0';
+        menu.style.opacity = '0';
+        hamburger.classList.remove('hidden');
+        close.classList.add('hidden');
+      }
+
+      document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        const hamburger = document.getElementById('hamburger-icon');
+        const close = document.getElementById('close-icon');
+        const isOpen = menu.style.maxHeight && menu.style.maxHeight !== '0px' && menu.style.maxHeight !== '0';
+
+        if (isOpen) {
+          menu.style.maxHeight = '0';
+          menu.style.opacity = '0';
+          hamburger.classList.remove('hidden');
+          close.classList.add('hidden');
+        } else {
+          menu.style.maxHeight = menu.scrollHeight + 'px';
+          menu.style.opacity = '1';
+          hamburger.classList.add('hidden');
+          close.classList.remove('hidden');
+        }
+      });
     
       function toggleDetails(id) {
         const element = document.getElementById(id);
